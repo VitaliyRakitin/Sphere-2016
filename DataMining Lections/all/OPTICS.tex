@@ -1,0 +1,65 @@
+\subsection{OPTICS}
+OPTICS "--- {\it <<ordering points to identify the clustering structure>>. }
+
+
+{\bf Основная идея} "--- не ограничиваться фиксированной плотностью, как в DBSCAN, а варьировать ее в зависимости от того, как много объектов попадают в $\e$-окрестность.
+
+Как в алгоритме DBSCAN, OPTICS требует двух параметров: $\e$, который описывает максимальное расстояние (радиус) для оценки плотности, и $MinPts$ "--- та самая минимальная плотность, то есть количество объектов, необходимых для формирования кластера. 
+Однакое, в отличии от DBSCAN, OPTICS также учитывает то, что точки могут являться частью более плотного кластера, поэтому вводится понятие $core\_distance$, которое описывает расстояние до ближайшей точки внутри круга радиуса $MinPts$.
+\[
+core\_distance(p) = 
+\begin{cases}
+\mathrm{UNDEFINED},\quad \text{if } |N_{\e} (p)| < MinPts;\\
+\text{{\it MinPts} is the smallest distance to } N_{\e}(p), \quad \mathrm{otherwise}.
+\end{cases}
+\]
+
+Так же введём понятие $reachability\_distance$, описывающее расстояние от объекта $O$ до $p$ или $core\_distance(p)$:
+\[
+reachability\_distance(p) = 
+\begin{cases}
+\mathrm{UNDEFINED},\quad \text{if } |N_{\e} (p)| < MinPts;\\
+\max(core\_dist(p),dist(p,O)), \quad \mathrm{otherwise}.
+\end{cases}
+\]
+
+Если окажется так, что $O$ и $P$ "--- ближайшие друг к другу объекты, то необходимо, что бы в конечном итоге они оказались в одном кластере.
+
+Оба <<новых>> параметра будут неопределены, если в районе данной точки не будет распологаться достаточно плотный кластер, удовлетворяющий основным параметрам ($\e, MinPts$).
+
+\subsubsection{Алгоритм OPTICS}
+
+Рассмотрим данный алгоритм в виде псевдокода на языке $Python$:
+\begin{lstlisting}
+function optics(X, eps, min_pts)
+    for each point x in X:
+        x.reachability-distance = UNDEFINED
+    for each unprocessed point x in X:
+        N = getNeighbors(x, eps)
+        mark x as processed
+        output x to the ordered list
+        if (core-distance(x, eps, min_pts) != UNDEFINED):
+            Seeds = empty priority queue
+            update(N, x, Seeds, eps, min_pts)
+            for each next z in Seeds:
+                N1 = getNeighbors(z, eps)
+                mark z as processed
+                output z to the ordered list
+                if (core-distance(z, eps, min_pts) != UNDEFINED):
+                    update(N1, z, Seeds, eps, min_pts)
+
+function update(N, x, Seeds, eps, min_pts)
+    coredist = core-distance(x, eps, min_pts)
+    for each z in N:
+        if (z is not processed):
+            new-reach-dist = max(coredist, dist(x, z))
+            # z is not in Seeds
+            if (z.reachability-distance == UNDEFINED):
+                z.reachability-distance = new-reach-dist
+                Seeds.insert(o, new-reach-dist)
+            # z in Seeds, check for improvement
+            else:
+                if (new-reach-dist < z.reachability-distance):
+                    z.reachability-distance = new-reach-dist
+                    Seeds.move-up(z, new-reach-dist)
+\end{lstlisting}

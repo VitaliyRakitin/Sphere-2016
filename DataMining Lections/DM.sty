@@ -1,0 +1,38 @@
+\newcommand{\NN}{\mathcal{N}} %нормальное распределенеие
+
+\newtheorem{The}{Теорема}[section]
+\newtheorem{Ut}{Утверждение}[section]
+\newtheorem{Sl}{Следствие}[section]
+\newtheorem{Task}{Упражнение}[section]
+\newtheorem{Def}{Определение}[section]
+\newtheorem{Lem}{Лемма}[section]
+\newtheorem{Pre}{Предложение}[section]
+\newtheorem{Zam}{Замечание}[section]
+\newtheorem{Zad}{Задача}[section]
+\newenvironment{Proof}
+       {\par\noindent{\textbf{Доказательство.}}}
+       {\hfill$\scriptstyle\blacksquare$}
+\newenvironment{Solution}
+       {\par\noindent{\textbf{Решение.}}}
+       {\hfill$\scriptstyle\blacksquare$}
+
+\newtheorem{Examp}{Пример}[section]
+
+
+\usepackage[procnames]{listings}
+\usepackage{color}
+ 
+\definecolor{keywords}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{0,0,113}
+\definecolor{red}{RGB}{160,0,0}
+\definecolor{green}{RGB}{0,150,0}
+ 
+\lstset{language=Python, 
+        basicstyle=\ttfamily\small, 
+        keywordstyle=\color{keywords},
+        commentstyle=\color{comments},
+        stringstyle=\color{red},
+        showstringspaces=false,
+        identifierstyle=\color{green},
+        procnamekeys={def,class}}
+ 

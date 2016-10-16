@@ -1,0 +1,229 @@
+%%%%%%%%%%%%%%%%%%%%%%%  ПАКЕТЫ  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{cmap}                               % Чтобы в PDF работал человеческий поиск
+\usepackage[X2,T2A]{fontenc}                    % T2A = русская кодировка. X2 = яти
+\usepackage[utf8]{inputenc}                     % Ввод в универсальной кодировке
+\usepackage{setspace,soulutf8}      		        % Чтобы можно было менять межстрочный и межбуквенный интервалы
+\usepackage{amsmath,amsfonts,amssymb,amsthm}    % Символы для математики
+\usepackage{mathrsfs}                           % Символы для математики
+\usepackage{dsfont}                             % Шрифт для полей действительных, комплексных... чисел командой \mathds
+\usepackage[subfigure]{tocloft}  % Многоточие в оглавлении
+\usepackage{array,multicol,multirow,bigstrut}   % Чтобы можно было делать в таблице колонки фиксированной ширины, слитные ячейки, вставлять strut'ы.
+\usepackage{indentfirst}                        % Абзацный отступ везде
+\usepackage[british,russian]{babel}             % Русские переносы, тире, типографика, самодержавие, духовность!
+\usepackage[perpage]{footmisc}                  % Сброс счётчика сносок на каждой странице
+\usepackage[pdftex,unicode,bookmarks=true,bookmarksopen=true,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref} % Синие ссылки в PDF
+\usepackage{microtype}                          % Свешивающаяся пунктуация и подгонка белого пространства по правилу \pm 2 процента
+\usepackage{textcomp}                           % Чтобы в формулах можно было русские буквы писать через \text{}
+\usepackage[paper=a4paper,top=12.7mm, bottom=12.7mm,left=12.7mm,right=12.7mm,bindingoffset=6.6mm,includefoot]{geometry} % Достаточно экономные размеры листа и поля для нумерации страниц внизу (для колонтитулов в стиле лекций по матану, нужно includefoot заменить на includehead и не только
+\usepackage{xcolor}                             % Чтобы можно было цветные объекты вставлять
+\usepackage[pdftex]{graphicx}                   % Чтобы вставились изображения
+\usepackage{float,longtable}                    % Поддержка плавающих таблиц и рисунков
+\usepackage[margin=0pt,font=small,labelfont=bf,labelsep=period]{caption} % Подписи таблиц и рисунком мелкие, жирные, с принятым в русской типографике разделителем.
+\usepackage{rotating}                           % Создание своих акцентов, поворот объекта.
+\usepackage{datetime}                           % Отображение времени
+%\usepackage{embedfile}                         % Чтобы код LaTeXа включился как приложение в PDF-файл
+\usepackage{xspace}
+\usepackage{wrapfig,enumitem}                   % Обтекаемые текстом рисунки
+\usepackage{mathtools}                          % В тексте используется smashoperator, чтобы избежать некрасивых пробелов вокруг сумм и пределов с большим подстрочником
+\usepackage{cancel}                             % Красивое <<вычёркивание>> сокращающихся выражений одноимённой командой
+\usepackage{tikz,pgfplots}			% Рисование графиков непосредственно кодом
+\usepackage{subfigure}
+\usepackage{fancyhdr}	% Пакет для создания колонтитулов в стиле лекций по матану
+\usepackage{accents}
+\usepackage{pb-diagram}
+
+%%%%%%%%%%%%%%%%%%%%%%%  ПАРАМЕТРЫ  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setstretch{1}                          % Межстрочный интервал
+\flushbottom                            % Эта команда заставляет LaTeX чуть растягивать строки, чтобы получить идеально прямоугольную страницу
+\righthyphenmin=2                       % Разрешение переноса двух и более символов
+\pagestyle{plain}                       % Нумерация страниц снизу по центру.
+\settimeformat{hhmmsstime}              % Формат времени с секундами
+\widowpenalty=300                       % Небольшое наказание за вдовствующую строку (одна строка абзаца на этой странице, остальное --- на следующей)
+\clubpenalty=3000                       % Приличное наказание за сиротствующую строку (омерзительно висящая одинокая строка в начале страницы)
+\setlength{\parindent}{1.5em}           % Красная строка.
+\setlength{\topsep}{0pt}                % Уничтожение верхнего отступа, если он где проявится
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% Техническая подготовка для определения следующих команд %%%%
+\makeatletter
+\newcommand*{\relrelbarsep}{.386ex}
+\newcommand*{\relrelbar}{%
+  \mathrel{%
+    \mathpalette\@relrelbar\relrelbarsep
+  }%
+}
+\newcommand*{\@relrelbar}[2]{%
+  \raise#2\hbox to 0pt{$\m@th#1\relbar$\hss}%
+  \lower#2\hbox{$\m@th#1\relbar$}%
+}
+\providecommand*{\rightrightarrowsfill@}{%
+  \arrowfill@\relrelbar\relrelbar\rightrightarrows
+}
+\providecommand*{\leftleftarrowsfill@}{%
+  \arrowfill@\leftleftarrows\relrelbar\relrelbar
+}
+\providecommand*{\xrightrightarrows}[2][]{%
+  \ext@arrow 0359\rightrightarrowsfill@{#1}{#2}%
+}
+\providecommand*{\xleftleftarrows}[2][]{%
+  \ext@arrow 3095\leftleftarrowsfill@{#1}{#2}%
+}
+\makeatother
+
+
+
+%%%%%%%%%%%%%%%%%%%%% Команды-сокращения %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\pau}{\hskip .75em plus.1em minus.08em\relax}	% пробел для выражений с кванторами, например «\forall\ \e>0\pau\exists\ \delta\colon», где \e определяется как
+\newcommand{\ds}{\displaystyle}			% Быстрое переключение на выключный стиль формулы, где интегралы и суммы большие
+\newcommand{\e}{\varepsilon}                % эпсилон
+\newcommand{\p}{\partial}                   % частная производная
+\renewcommand{\phi}{\varphi}                % Чтоб фи писалась в соответствии с русской традицией
+\newcommand{\q}{\varnothing}			% Пустое множество в русской традиции
+\newcommand{\N}{\mathds{N}}			% Натуральные числа
+\newcommand{\Z}{\mathds{Z}}			% Целые числа
+\newcommand{\Q}{\mathds{Q}}			% Рациональные числа
+\newcommand{\R}{\mathds{R}}			% Действительные числа
+\renewcommand{\C}{\mathds{C}}			% Комплексные числа
+\newcommand{\T}{\mathbb{T}}			% Отмеченное разбиение (для интегральных сумм Римана или Римана"--~Стилтьеса
+\newcommand{\Rim}{\mathcal R}			% Риман
+\renewcommand{\le}{\leqslant}           % Правильное меньше или равно
+\renewcommand{\leq}{\leqslant}           % Правильное меньше или равно
+\renewcommand{\ge}{\geqslant}           % Правильное больше или равно
+\renewcommand{\geq}{\geqslant}           % Правильное больше или равно
+\newcommand{\dd}{\setminus}		% Ассоциируется с diagdown, но это именно вычитание множеств
+\renewcommand{\iff}{\,\Leftrightarrow\,}	% Если и только если
+\newcommand{\imp}{\hspace{1pt plus1pt}\Rightarrow\hspace{1pt plus1pt}}		% Следовательно
+\def\hm#1{#1\nobreak\discretionary{}{\hbox{$#1$}}{}} % Команда для переноса на следующую строку символов бинарных операций
+\renewcommand{\a}{\langle} 		% Открывающая треугольная скобка
+\newcommand{\s}{\rangle}		% Закрывающая треугольная скобка
+\newcommand{\ol}[1]{\overline{#1}}	% Надчёркивание аргумента по всей ширине
+
+%%%% СТРЕЛКИ %%%%%%%%%%%%%%
+\renewcommand{\to}{\rightarrow}                   % Правильная стрелка вправо («стремится») без возможности подписать
+\newcommand{\To}[1]{\xrightarrow{#1}}		% Стрелка «стремится», ширина которой зависит от ширины агрумента-подписи (подпись ставится вверху)
+\newcommand{\tend}[1]{\xrightarrow[#1]{}}	% Стрелка «стремится», ширина которой зависит от ширины агрумента-подписи (подпись ставится внизу)
+\newcommand{\Tot}[1]{\xrightarrow{\text{#1}}}	% Стрелка «стремится», ширина которой зависит от ширины текстового агрумента-подписи (подпись ставится вверху)
+\newcommand{\te}[1][]{\xrightarrow[n\to\infty]{#1}}	% Стремится при n стремящемся к бесконечности
+\newcommand{\TE}{\xrightarrow[N\to\infty]{}}	% Стремится при N стремящемся к бесконечности
+\newcommand{\neV}{\overline{\vphantom{<}\quad}\kern-.35em\searrow}	% Не возрастает в стиле лекций по анализу
+\newcommand{\neU}{\underline{\vphantom{<}\quad}\kern-.35em\nearrow}	% Не убывает
+\newcommand{\rsh}[2][P]{\xrightrightarrows[{#2\to\infty}]{#1}}		% Двойная растяжимая стрелка «равномерно сходится последовательность». Снизу стрелки подпись-обязательный-аргумент, к которому приписывается автоматически стремление к бесконечности. Необязательные аргумент изменяет подпись сверху с P на то, что напишите
+\newcommand{\rsH}[2][X]{\xrightrightarrows[{#2}]{#1}} % Равномерная сходимость по параметру. Подпись снизу задаётся явно и обязательно; подпись сверху задаётся необязательно, по умолчанию X
+\newcommand{\nsh}[2][n]{\xrightarrow[#1\to\infty]{\|\ \|_{#2}}}		% Растяжимая стрелка «сходится по норме». Вид нормы подписывается в обязательном аргументе (например l_2). Необязательный аргумент «что стремится к бесконечности» (стремление к бесконечности приписывается автоматически)
+
+
+%%%%% Предел как оператор %%%%%%%%
+\newcommand{\yo}[2]{\lim\limits_{#1\to#2}}	% предел{при этой букве}{стремящейся сюда}
+\newcommand{\prb}[1]{\lim\limits_{#1}}		% предел{по такой базе}
+
+%%%%%% O-символика %%%%%%%%%%%%
+\newcommand{\oo}{\overline{\overline o}} 		% o-малое без подписей и скобок (две черты сверху ставятся автоматически). Переопределение этой команды изменит вид всех надстроек, указанных ниже
+\newcommand{\ou}{\underline{\underline{O}}}		% Аналогично O-большое
+\newcommand{\ouu}[2]{\underset{#2\ }\ou(#1)}		% O-большое{по отношению к чему}{при каком процессе}
+\newcommand{\ooo}[2]{\underset{#2\ }\oo(#1)} % o-малое{по отношению к чему}{при каком процессе}
+\newcommand{\ooob}[2]{\underset{#2}{\oo\big(#1\big)}}	% Аналогично, только скобки вокруг первого аргумента с плавающим размером
+\newcommand{\ooog}[2]{\underset{#2}{\ou\big(#1\big)}}
+
+%%%%%% Дифференцирование %%%%%%%%%%%%%%
+\newcommand{\CP}[2]{\frac{\partial #1}{\partial #2}}	% Частная производная{чего}{по чему}
+\newcommand{\cP}[2]{\frac{d #1}{d #2}}			% Полная/материальная производная
+\newcommand{\Jacoby}[4]{\begin{pmatrix}
+\CP {{#1}_{1}}{{#2}_1} 	& \CP{{#1}_{1}}{{#2}_2} & \dots & \CP{{#1}_{1}}{{#2}_{#3}} \\[1ex]
+\CP {{#1}_{2}}{{#2}_1} 	& \CP{{#1}_{2}}{{#2}_2} & \dots & \CP{{#1}_{2}}{{#2}_{#3}} \\
+\vdots 			& \vdots		& \ddots& \vdots \\
+\CP {{#1}_{#4}}{{#2}_1} & \CP{{#1}_{#4}}{{#2}_2}& \dots & \CP{{#1}_{#4}}{{#2}_{#3}}	
+\end{pmatrix}}% матрица Якоби{чего}{по чему}{размерность образа}{размерность аргумента}
+
+
+\newcommand{\ttilde}[1]{\tilde{\tilde{#1}}}	% Набрать символ(ы)-аргумент с двумя узкими волнами
+\newcommand{\Til}[1]{\widetilde{#1}{} }		% Набрать символ(ы)-аргумент с волной, ширина которой равна ширине аргумента
+
+%%%% ПОСЛЕДОВАТЕЛЬНОСТИ, СУММЫ, ПРОИЗВЕДЕНИЯ %%%%%
+\newcommand{\pos}[2][n]{\big\{{#2}_{#1}\big\}_{#1=1}^\infty} 		% Последовательность: в фигурных скобках аргумент с нижним индексом по умолчанию n; справа от скобок подпись n (или необязательный аргумент) от 1 до бесконечности
+\newcommand{\ar}[4]{\big\{{#1}_{#2}\big\}_{#2=#3}^{#4}} % Задание последовательности четырьмя аргументами: что, каким символом нумеруется, откуда, докуда
+\newcommand{\Har}[4]{\left\{{#1}_{#2}\right\}_{#2=#3}^{#4}} % Аналог предыдущего, но размер фигурных скобок подстраивается под внутренность.
+\newcommand{\AR}[3]{\big\{#1\big\}_{#2}^{#3}} 		% Последовательность. Три аргумента: {что и как нумеруеся}{номер=начальное значение}{конечное значение номера}
+\newcommand{\ry}[3][1]{\sum\limits_{{#3}={#1}}^\infty {#2}_{#3}}	% Ряд[с какого номерая начиная]{чего}{как нумеруется}; по умолчанию с единицы; Например, \ry an
+\newcommand{\rY}[2][1]{\sum\limits_{{#2}={#1}}^\infty} % Сумма до бесконечности[с какого номера начать]{символ индекса}; например, \rY n или \rY[0]j
+\newcommand{\RY}[3]{\sum\limits_{#1 = #2}^{#3}}		% Сумма{по этому индексу}{от этого значения индекса}{до этого значения индекса}; Например, \RY n1N
+\newcommand{\tmy}[3][1]{\prod\limits_{#3=#1}^{\infty}#2_{#3}}	% Бесконечное произведение (от слова times), аналог \ry
+\newcommand{\tmY}[2][1]{\prod\limits_{#2=#1}^{\infty}} % аналог \rY
+\newcommand{\TMY}[3]{\prod\limits_{#1=#2}^{#3}}		% аналог \RY
+
+
+
+%%%%% Окружения для нумерованных перечней
+\newenvironment{iItems}{\begin{enumerate}\let\AEtheenumi\theenumi{}\renewcommand{\theenumi}{\roman{enumi}}\renewcommand{\labelenumi}{(\theenumi)}}{\renewcommand{\labelenumi}{\theenumi.}\renewcommand{\theenumi}{\AEtheenumi}\end{enumerate}}	% (i), (ii), ...
+\newenvironment{azItems}{\begin{enumerate}\let\AEtheenumi\theenumi{}\renewcommand{\theenumi}{\asbuk{enumi}}\renewcommand{\labelenumi}{(\theenumi)}}{\renewcommand{\labelenumi}{\theenumi.}\renewcommand{\theenumi}{\AEtheenumi}\end{enumerate}}	% (а), (б), ...
+\newenvironment{roItems}{\begin{enumerate}\renewcommand{\labelenumi}{(\theenumi)}}{\renewcommand{\labelenumi}{\theenumi.}\end{enumerate}}	% (1), (2), ...
+\newenvironment{oItems}{\begin{roItems}\setcounter{enumi}{-1}}{\end{roItems}}	% (0), (1), ...
+%%% В КОНЦЕ ФАЙЛА ПРИВЕДЕНЫ КОМАНДЫ, КОТОРЫЕ Я НЕ УСПЕЛ ОПИСАТЬ
+
+%%%%%%%%%%%%%%%%%%%% Операторы в смысле LaTeX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\sign}{sgn}	% Знак (перестановки)
+\DeclareMathOperator{\sgn}{sgn}		% Сокращённая альтернатива sign
+\DeclareMathOperator{\diag}{diag}	% Диагональная матрица
+\DeclareMathOperator{\const}{const}	% Константа
+\DeclareMathOperator{\rang}{rank}         % Оператор ранга
+\DeclareMathOperator{\rank}{rank}	% На любой вкус
+\DeclareMathOperator{\diam}{diam}	% Диаметр, например, разбиения
+\DeclareMathOperator{\card}{card}	% Мощность множества
+\DeclareMathOperator{\osc}{osc}		% Осцилляция	
+\DeclareMathOperator{\grad}{grad}	% Градиент
+\DeclareMathOperator{\intS}{int}	% Внутренность множества
+\DeclareMathOperator{\ext}{ext}		% Внешность множества
+\DeclareMathOperator{\supp}{supp}
+
+
+%%%%%%% Математическая экзотика %%%%%
+\newcommand{\defequiv}{\mathbin{\vbox{\baselineskip=1.95pt\lineskiplimit=0pt\hbox{.}\hbox{.}\hbox{.}}\hskip-0.3em\equiv}} 		% вертикальное троеточие =, то есть «по определению тождественно»
+\newcommand{\rus}[1]{\mbox{\rm{\scriptsize{#1}}}}	% команда убивает зависимость русского текста в формуле от стиля абзаца (но и от стиля формулы тоже). Специально для обозначения левой и правой производных, чтобы  f'_п печаталось с прямой буквой «п» и нельзя было спутать с n
+\newcommand{\overcirc}[1]{\accentset{\circ}{#1}}	% круг над символом
+\newcommand{\overstar}[1]{\accentset{\bigstar}{#1}}	% звезда над символом
+
+%%%%%%%%%%%%%%%%%%% Глобальные текстовые команды %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ENGs}[1]{\foreignlanguage{british}{#1}} % Переключение правил переноса и прочих правил автооформления на английский язык действует на аргумент
+\newcommand{\ENG}{\selectlanguage{british}} % Глобальное переключение (если просто начать писать на другом язык, велика вероятность появления очень больших пробелов или помещения части слова за границу листа
+\newcommand{\RUS}{\selectlanguage{russian}}
+\newcommand{\fnnsp}{\hspace{-0.4em}} % Знак сноски принято ставить до всех знаков препинания, кроме ! ? ...
+% А если есть возможность подвинуть низкий знак препинания под сноску, то для этого Андрей Викторович и придумал \fnnsp
+\let\myfootnote\footnote
+\renewcommand{\footnote}[1]{\myfootnote{\;#1}} % Сноски Андрея Виторовича
+
+%%%%%%%% Определение разрядки разреженного текста и задание красивых и притом регулируемых многоточий
+% Зачем и почему описано в блоге http://kostyrka.ru/blog
+\newdimen\ellipsiskern
+\setlength{\ellipsiskern}{.1em}
+\newdimen\ellipsiskernen
+\setlength{\ellipsiskernen}{.2em}
+\newcommand{\ldotst}{.\kern\ellipsiskern.\kern\ellipsiskern.}	% вместо ... пишем \ldotst{}
+\newcommand{\ldotse}{!\kern\ellipsiskern.\kern\ellipsiskern.}	% вместо !.. пишем \ldotse{}
+\newcommand{\ldotsq}{?\kern\ellipsiskern\kern-.11em.\kern\ellipsiskern.}	% вместо ?.. пишем \ldotsq{}
+\newcommand{\ldotsten}{.\kern\ellipsiskernen.\kern\ellipsiskernen.}		% аглийское ...
+\newcommand{\ldotspen}{.\kern\ellipsiskernen.\kern\ellipsiskernen.\kern\ellipsiskernen\kern.15em.}
+\newcommand{\ldotseen}{.\kern\ellipsiskernen.\kern\ellipsiskernen.\kern\ellipsiskernen\kern.15em!}
+\newcommand{\ldotsqen}{.\kern\ellipsiskernen.\kern\ellipsiskernen.\kern\ellipsiskernen\kern.067em?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%% ДРУГИЕ ПОЛЕЗНЫЕ КОМАНДЫ БЕЗ КОММЕНТАРИЕВ (ПОКА) %%%%%%%
+\newcounter{rad}
+\setcounter{rad}{1}
+% a_1+a_2+\ldots
+	\def\rad#1#2{\ifnum \therad < \the\numexpr(#2 + 1)\relax #1_\therad + \addtocounter{rad}{1} \rad{#1}{#2}\else \ldots \fi \setcounter{rad}{1}}
+%a_{N+1}+a_{N+2}+\ldots
+	\def\raD#1#2#3{\ifnum \therad < \the\numexpr(#2 + 1)\relax #1_{#3{\therad}} + \addtocounter{rad}{1} \raD{#1}{#2}{#3}\else \ldots \fi \setcounter{rad}{1}}
+\def\crad#1#2#3#4{\ifnum \therad < \the\numexpr(#4 + 1)\relax #1{\therad}#3 + \addtocounter{rad}{1} \crad{#1}{#2}{#3}{#4}\else \ldots +#1{#2}#3 \fi \setcounter{rad}{1}}
+\def\craD#1#2#3#4#5#6{\ifnum \therad < \the\numexpr(#4 + 1)\relax #1{#5{\therad}#6}#3 + \addtocounter{rad}{1} \craD{#1}{#2}{#3}{#4}{#5}{#6}\else \ldots +#1{#5#2#6}#3  \fi \setcounter{rad}{1}}
+%repeat argument #1 #2 times
+	\def\tfT#1#2{\ifnum \therad < \the\numexpr(#2 + 1)\relax #1\addtocounter{rad}{1} \tfT{#1}{#2}\else \fi \setcounter{rad}{1}}
+\def\dI#1#2#3#4#5#6{\ifnum \therad < \the\numexpr(#6 + 1)\relax {#1}_{\therad}{#3}_{\therad}#5\addtocounter{rad}{1} \dI{#1}{#2}{#3}{#4}{#5}{#6}\else \dots #5{#1}_{#2}{#3}_{#4}\fi \setcounter{rad}{1}}
+\def\DI#1#2#3#4#5#6{\ifnum \therad < \the\numexpr(#6 + 1)\relax #1\therad#3\therad#5\addtocounter{rad}{1} \DI{#1}{#2}{#3}{#4}{#5}{#6}\else \dots #5#1#2#3#4\fi \setcounter{rad}{1}}
+\def\iSum#1#2#3{\ifnum \therad < #3\relax {#1}_{\therad}{#2}_{\the\numexpr(#3 - \therad + 1)\relax}+ \addtocounter{rad}{1}\iSum{#1}{#2}{#3}\else {#1}_{\therad}{#2}_{1}\fi \setcounter{rad}{1}}
+\def\tms#1#2{\ifnum \therad < \the\numexpr(#2 + 1)\relax #1_\therad \ifnum \therad < \the\numexpr(#2)\relax \cdot \else \fi\addtocounter{rad}{1} \tms{#1}{#2}\else \cdots \fi \setcounter{rad}{1}}
+\def\ctms#1#2#3#4#5{\ifnum \therad < \the\numexpr(#4 + 1)\relax #1{#2\therad}#3 \ifnum \therad < \the\numexpr(#4)\relax \cdot \else \fi\addtocounter{rad}{1} \ctms{#1}{#2}{#3}{#4}{#5}\else \cdots #1{#2#5}#3\fi \setcounter{rad}{1}}
+\newcommand{\cSize}{\footnotesize}
+\newcommand{\cmt}[1]{\text{\cSize #1}}
+\newcommand{\BIggl}[1]{\left#1\vphantom{\Bigg(\frac12\Bigg)^2}\right.}
+\newcommand{\BIggr}[1]{\left.\vphantom{\Bigg(\frac12\Bigg)^2}\right#1}
