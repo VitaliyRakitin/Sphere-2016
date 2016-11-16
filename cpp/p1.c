@@ -1,7 +1,8 @@
 /*
- *  Task 1 
+ *  Task 1: Сообщения
  *
  *  Created by Vitaliy Rakitin in 2016 
+ *  BD-11, TechnoSphera
  *
  **/
 
@@ -13,11 +14,12 @@
 #define AMOUNT_OF_KEYS 4
 const char* keys[] = {"Date:\0", "From:\0", "To:\0", "Subject:\0"};
 
-
+/* отбор ключевых строк: 1 -- да, 0 -- нет */
 int filter(char* line, size_t in_length, int *errflag){
 char *subline;
 int result = 0;
-size_t key_len;
+size_t key_len; // размер ключа
+
 for(size_t j = 0; j<AMOUNT_OF_KEYS; j++){
     /* будем сравнивать строки и ключи по 1ому элементу */
     /* если длина строки меньше длины ключа -- нет смысла это рассматривать */
@@ -36,22 +38,22 @@ for(size_t j = 0; j<AMOUNT_OF_KEYS; j++){
 
     if (result == 1) break;
     }
-    return result;
+    return result; 
 }
 
 
 
 int main(void){
-    char a;
-    int str_size = 0;
-    size_t size = 0;
-    size_t line_times = 1;
-    size_t str_times = 1;
+    char a; // текущий считанный символ
+    int str_size = 0;  // количество строк  
+    size_t size = 0;  // размер текущей строки
+    size_t line_times = 1;  // сколько раз повторили MAX_SIZE в разделе выделения памяти под строку
+    size_t str_times = 1;  // сколько раз повторили MAX_SIZE в разделе выделения памяти под строки
     int errflag = 0;
 
-    char** str =(char**)malloc(MAX_SIZE * sizeof(char*));
+    char** str =(char**)malloc(MAX_SIZE * sizeof(char*)); // подходящие строки
     if (str== NULL) errflag = -1;
-    char* line = (char*)malloc(MAX_SIZE * sizeof(char));
+    char* line = (char*)malloc(MAX_SIZE * sizeof(char)); // текущая строка
     if (line == NULL) errflag = -1;
 
     while((errflag == 0)&&((a = fgetc(stdin))!= EOF)){
@@ -63,6 +65,7 @@ int main(void){
             /* проверим, а вдруг это то, что нам нужно */
             line[size] = '\0';
             if (filter(line, size, &errflag)){
+                /* если да, то добавим в str */
 				str[str_size]= (char*)malloc((size+2)* sizeof(char));
 				if (str[str_size] == NULL) {errflag = -1;break;}
             	str[str_size]=strcpy(str[str_size],line);
