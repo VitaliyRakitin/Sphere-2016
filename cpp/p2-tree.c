@@ -144,8 +144,7 @@ size_t getnum(char *str,size_t *counter,  int *errflag){
                     } 
                     break;  /* пробел должен быть только перед числом */      
             default: 
-            	if (num == 0) 
-                    *errflag = 4; 
+            	if (num == 0) *errflag = 4; 
             	check_out = 0; 
                 count -= 1; 
                 break;
