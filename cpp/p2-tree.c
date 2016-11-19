@@ -22,9 +22,9 @@
 
 /* Один лист нашего дерева */
 struct list{
-    int type; // TUPE_PLUS, TUPE_STRING
+    int type; // TYPE_PLUS, TYPE_STRING
     size_t size; // Real size of a string
-    int times; // repeat string N times, N = times 
+    size_t times; // repeat string N times, N = times 
     char *string;
     struct list *right;
     struct list *left;
@@ -48,7 +48,7 @@ void free_tree(struct list *tree){
 /* Считывание строки со стандартного входа */
 char* read_string(int *errflag, size_t *size){
     char character;
-    int times = 1; // сколько раз повторили MAX_SIZE в разделе выделения памяти
+    size_t times = 1; // сколько раз повторили MAX_SIZE в разделе выделения памяти
 
     char *line = (char*)malloc(MAX_SIZE * sizeof(char));
     if (line == NULL) *errflag = 1;
@@ -57,31 +57,34 @@ char* read_string(int *errflag, size_t *size){
     *size = 0;
 
     while((*errflag == 0)&&((character = fgetc(stdin))!= EOF)){
-        /* если считали \n или \0, тогда пора заканчивать */
-        if ((character == 10)||(character==0)){           
-            line[*size] = '\0';
-            break;
+        if ((character!= 10)&&(character!=0)&&(character!=13)){
+            line[*size] = character;
+            (*size)++;
         }
-        else{
-        line[*size] = character;
-        (*size)++;
-        }
+        else break; /* если считали \n или \0, тогда пора заканчивать */
 
         if (*size >= times*MAX_SIZE-1){
             times++;
             line = (char*)realloc(line, (MAX_SIZE*times)*sizeof(char));
-            if (line == NULL) {*errflag = 1;break;}
+            if (line == NULL){
+                *errflag = 1;
+                break;
+            }
         }
     }
+    line[*size] = '\0';
     return line;
 }
 
-/* Создание одного листа дерева по заданным пораметрам */
+/* Создание одного листа дерева по заданным параметрам */
 struct list* create_list(int type, const char *str, int *errflag){
     struct list *str_list;
     
     str_list = (struct list*)malloc(sizeof(struct list));
-    if (str_list == NULL){*errflag = 1; return 0;}
+    if (str_list == NULL){
+        *errflag = 1; 
+        return 0;
+    }
 
     /* параметры, которые всегда будут определены одинаково */
     str_list->type = type;
@@ -95,8 +98,10 @@ struct list* create_list(int type, const char *str, int *errflag){
             str_list->size = strlen(str);
 
             str_list->string = (char*)malloc((str_list->size  + 2) * sizeof(char));
-            if (str_list->string == NULL){*errflag = 1; return 0;}
-
+            if (str_list->string == NULL){
+                *errflag = 1; 
+                return 0;
+            }
             str_list->string[0] = '\0';
             str_list->string = strcat(str_list->string,str);
             break;
@@ -108,17 +113,19 @@ struct list* create_list(int type, const char *str, int *errflag){
             str_list->string = NULL;
             *errflag = 11; 
             break;
-        }
+    }
     return str_list;
 }
 
 /* функция получения числа из строки с текущей позиции */
-int getnum(char *str,size_t *counter,  int *errflag){
-    int num = 0; // наше число
+size_t getnum(char *str,size_t *counter,  int *errflag){
+    size_t num = 0; // наше число
     int check_out = 1;  // пометка для выхода
     char character;
 	size_t count;
-    for (count = 0; (*errflag == 0)&&(check_out==1)&&(sscanf(str + count + *counter,"%c",&character)==1); count++){
+
+    for (count = 0; (*errflag == 0)&&(check_out==1); count++){
+        character = str[count + *counter];
         switch(character){
             case '0': num = num*10;     break;
             case '1': num = num*10 + 1; break;
@@ -130,10 +137,17 @@ int getnum(char *str,size_t *counter,  int *errflag){
             case '7': num = num*10 + 7; break;
             case '8': num = num*10 + 8; break;
             case '9': num = num*10 + 9; break;
-            case ' ': if (num != 0)  {check_out = 0; count -= 1;} break;  /* пробел должен быть только перед числом */      
+            case ' ': 
+                    if (num != 0){
+                        check_out = 0; 
+                        count -= 1;
+                    } 
+                    break;  /* пробел должен быть только перед числом */      
             default: 
-            	if (num == 0) *errflag = 4; 
-            	check_out = 0; count -= 1; 
+            	if (num == 0) 
+                    *errflag = 4; 
+            	check_out = 0; 
+                count -= 1; 
                 break;
         }
     if (check_out != 1) break;
@@ -152,26 +166,35 @@ struct list* create_tree(char *str, int in_breakets, size_t size, int *errflag, 
 	size_t first,final; // адрес первого и последнего элемента в ковычках (подстроки)
 	char *subline; // подстрока, вытащенная из ковычек
     size_t local_global_counter = 0; // подсчёт количества символов, пройденных по строке начиная с 0 позиции данного вхождения в функцию 
-    int num = 0; // число при умножении
+    size_t num = 0; // число при умножении
     int check_multy=0; // проверка умножения в начале подстроки
+    size_t counter = 0;
 
     /* создадим дерево и подстроку по дефолту */
 	head = create_list(TYPE_PLUS, NULL, errflag);
 	cur = head;
 	subline = (char*)malloc(size*sizeof(char));	
-	if (subline == NULL) {*errflag = 1; return head;}
+	if (subline == NULL){
+        *errflag = 1; 
+        return head;
+    }
+
     subline[0] = '\0';
 
     /* пойдём по строке */
-	for (size_t counter = 0;(counter < size)&&(*errflag == 0);counter++){
+    //printf("%lu %zu\n",strlen(str),size );
+	for (counter = 0;(counter < size)&&(*errflag == 0);counter++){
         /* считываем элемент */
-        sscanf(str+counter,"%c",&character);
+
+        character = str[counter];
 
         /* если open_quotes == 1, то это означает, что мы живём внутри открытых ковычек */
         if (open_quotes == 0)
             switch(character){
                 /* открыли кавычку, сохранили позицию первого элемента внутри */
-                case '"': first = counter+1; open_quotes = 1; break; 
+                case '"': 
+                    first = counter+1; 
+                    open_quotes = 1; break; 
                 case '+': 
                     /* а вдруг перед + было число? */
                     if (num != 0) {*errflag = 8; break;}
@@ -225,8 +248,7 @@ struct list* create_tree(char *str, int in_breakets, size_t size, int *errflag, 
                     if (num == 0){
                         num = getnum(str,&counter,errflag); 
                     }
-                    else{
-                    *errflag = 7;}
+                    else *errflag = 7;
                     break;
             }
         else
@@ -246,8 +268,7 @@ struct list* create_tree(char *str, int in_breakets, size_t size, int *errflag, 
                         num = 0;
                         check_multy = 0;
                     }
-                    else 
-                        *errflag = 10;
+                    else *errflag = 10;
                 }
             }
         }
@@ -258,15 +279,15 @@ struct list* create_tree(char *str, int in_breakets, size_t size, int *errflag, 
     return head;
 }
 
-/* Cоздание итоговой строки */
-char* create_out_string(struct list* tree, int *errflag){
+/* Cоздание итоговой строки без ковычек*/
+char* create_out_string_real(struct list* tree, int *errflag){
     size_t size = 0; // размер созданной строки в текущий момент
-    int times = 1; // сколько раз повторили MAX_SIZE в разделе выделения памяти под строку
+    size_t times = 1; // сколько раз повторили MAX_SIZE в разделе выделения памяти под строку
     char *string = (char*)malloc(MAX_SIZE * sizeof(char)); // строка 
     char *substring = (char*)malloc(MAX_SIZE * sizeof(char)); // вспомогательная подстрока
     size_t sub_size = 0; // размер подстроки в текущий момент
     struct list* cur; // текущая позиция на дереве
-
+    size_t i = 0;
     string[0] = '\0';
     cur = tree;
 
@@ -275,12 +296,14 @@ char* create_out_string(struct list* tree, int *errflag){
             рекурсивно считаем результат в подстроку */
         if (cur->left->type == TYPE_PLUS){
             free(substring);
-            substring = create_out_string(cur->left,errflag);
+            substring = create_out_string_real(cur->left,errflag);
             /* выделим недостающую память в нашей строке */
             while((strlen(substring) + size >= times*MAX_SIZE-1)&&(*errflag==0)){
                 times++;
                 string = (char*)realloc(string, (MAX_SIZE*times)*sizeof(char));
-                if (string == NULL) {*errflag = 1;break;}   
+                if (string == NULL){
+                    *errflag = 1;
+                    break;}   
             }
             /* объеденим полученные строки */
             string = strcat(string,substring);
@@ -299,7 +322,7 @@ char* create_out_string(struct list* tree, int *errflag){
             if (*errflag != 0) break;
 
             /* добавим подстроку нужное количество раз */
-            for (int i=0;i < cur->left->times;i++) 
+            for (i=0;i < cur->left->times;i++) 
                 string = strcat(string,cur->left->string);
         }
         size = strlen(string);
@@ -320,13 +343,38 @@ char* create_out_string(struct list* tree, int *errflag){
             string = (char*)realloc(string, (size * tree->times + 2)*sizeof(char));
             if (string == NULL) {*errflag = 1;} 
             /* продублируем строку нужное количество раз */ 
-            else for (int i=1;i<tree->times;i++)
+            else 
+                for (i=1;i<tree->times;i++)
                     string = strcat(string,substring);
         }
     }
 
     free(substring);
     return string;
+}
+
+char* create_out_string(struct list* tree, int *errflag){
+    char *string_without;
+    char *string=NULL;
+    size_t size = 0;
+    string_without = create_out_string_real(tree,  errflag);
+    if (*errflag == 0){
+        size = strlen(string_without);
+        string = (char*)malloc((strlen(string_without)+3) * sizeof(char)); // строка 
+        if (string == NULL){
+            *errflag = 10;
+        }
+        else{
+            string[0] = '"';
+            string[1] = '\0';
+            string = strcat(string,string_without);
+            string[size+1] ='"';
+            string[size+2] ='\0';
+        }
+    }
+    free(string_without);
+    return string;
+
 }
 
 int main(void){
@@ -353,7 +401,7 @@ int main(void){
         }
     }
     if (errflag != 0)
-            printf("[error]\n");
+        printf("[error]\n");
     
     /* освободим память от дерева и от строки */
     if (tree != NULL)
